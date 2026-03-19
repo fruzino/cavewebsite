@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developer Hub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <div class="logo-container">
+            <span class="logo-text">Cave</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">About</a></li>
+                <li><a href="commands.html">Documentation</a></li>
+                <li><a href="dev.html" class="active">Developer</a></li>
+                <li><a href="download.html">Download</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section>
+            <h2>Developer Hub</h2>
+            <p>Cave is an open ecosystem designed for extensibility. This guide explains how to build and integrate
+                plugins into the Cave interpreter.</p>
+        </section>
+
+        <section>
+            <h2>Plugin Architecture</h2>
+            <p>The Cave interpreter interacts with plugins using a specialized RPC-like protocol over standard
+                input/output. This allows you to write plugins in any language.</p>
+
+            <div class="doc-section">
+                <h3>Directory Structure</h3>
+                <p>Plugins must be placed in the <code>c:\Cave\plugins\</code> directory with the following structure:
+                </p>
+                <pre><code>c:\Cave\plugins\
+└── my_plugin\
+    ├── run.bat      <-- Entry point
+    └── main.py      <-- Logic (optional)</code></pre>
+            </div>
+        </section>
+
+        <section>
+            <h2>Communication Protocol</h2>
+            <p>When you use <code>#insert my_plugin</code> in a Cave script, the interpreter executes the
+                <code>run.bat</code> file and communicates via the following protocol:
+            </p>
+            <table class="command-table">
+                <thead>
+                    <tr>
+                        <th>Direction</th>
+                        <th>Format</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Cave -> Plugin</td>
+                        <td><code>CALL &lt;method&gt; &lt;args&gt;</code></td>
+                        <td>Sent to plugin's `stdin` when a method is called.</td>
+                    </tr>
+                    <tr>
+                        <td>Plugin -> Cave</td>
+                        <td><code>RESULT &lt;value&gt;</code></td>
+                        <td>Optional: Print to `stdout` to return data to Cave.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>CLI Commands</h2>
+            <p>The Cave CLI provides tools for managing your environment and community plugins.</p>
+            <table class="command-table">
+                <thead>
+                    <tr>
+                        <th>Command</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>cave cli install &lt;name&gt;</code></td>
+                        <td>Install a plugin from the repository.</td>
+                    </tr>
+                    <tr>
+                        <td><code>cave cli update</code></td>
+                        <td>Update all installed plugins.</td>
+                    </tr>
+                    <tr>
+                        <td><code>cave cli uninstall &lt;name&gt;</code></td>
+                        <td>Remove a plugin from the system.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>Contributing</h2>
+            <p>Contributions to Cave are welcome. Join the community on GitHub and help us define the future of the
+                language.</p>
+            <pre><code>$ git clone https://github.com/limesuggestbox360/cavelib
+$ cd cavelib
+$ # Build your plugin</code></pre>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <a href="index.html">About</a>
+            <a href="commands.html">Documentation</a>
+            <a href="dev.html">Developer Hub</a>
+            <a href="download.html">Download</a>
+        </div>
+        <p>&copy; 2026 Fruzio. All rights reserved.</p>
+    </footer>
+</body>
+
+</html>

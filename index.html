@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cave Programming Language</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <div class="logo-container">
+            <span class="logo-text">Cave</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="commands.html">Documentation</a></li>
+                <li><a href="dev.html">Developer</a></li>
+                <li><a href="download.html">Download</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="hero">
+        <h1>Cave Programming Language</h1>
+        <p>C reborn</p>
+        <div class="cta-container">
+            <a href="commands.html" class="btn btn-primary">Get Started</a>
+            <a href="download.html" class="btn btn-secondary">Download</a>
+        </div>
+    </div>
+
+    <main class="main-content">
+        <section>
+            <h2>About Cave</h2>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <h3>Why use Cave?</h3>
+                    <p>Built on C, Cave is fast and easy to learn.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>Syntax</h3>
+                    <p>Easy syntax best for all beginners starting out with C or Python.</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Standard Usage</h2>
+            <p>Write clean, expressive code with minimal boilerplate. Here is a sample of Cave in action:</p>
+            <pre><code>// Define variables with type prefixes
+!count = 5
+@name = "Explorer"
+
+// Loop with a clear condition
+#while (count > 0) {
+    write("Hello " + name + "! Counting: " + count)
+    !count = count - 1
+}
+
+// Logic statements starting with #
+#if (count == 0) {
+    write("Done!")
+}</code></pre>
+        </section>
+
+        <section>
+            <h2>Community & Development</h2>
+            <p>Cave is an open ecosystem. Install community plugins with ease or build your own to extend the language's
+                power.</p>
+            <pre><code>$ cave cli install my-plugin
+$ cave run script.cv</code></pre>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <a href="index.html">About</a>
+            <a href="commands.html">Documentation</a>
+            <a href="dev.html">Developer Hub</a>
+            <a href="download.html">Download</a>
+        </div>
+        <p>&copy; 2026 Fruzio. All rights reserved.</p>
+    </footer>
+</body>
+
+</html>

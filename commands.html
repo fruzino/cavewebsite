@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <div class="logo-container">
+            <span class="logo-text">Cave</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">About</a></li>
+                <li><a href="commands.html" class="active">Documentation</a></li>
+                <li><a href="dev.html">Developer</a></li>
+                <li><a href="download.html">Download</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section>
+            <h2>Documentation & Syntax</h2>
+            <p>Welcome to the Cave documentation. This guide covers the basic syntax and core commands of the language.
+            </p>
+        </section>
+
+        <section>
+            <h2>Variables and Types</h2>
+            <p>Cave uses prefix characters to determine the type of a variable upon declaration.</p>
+            <table class="command-table">
+                <thead>
+                    <tr>
+                        <th>Prefix</th>
+                        <th>Type</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>!</code></td>
+                        <td>Integer</td>
+                        <td><code>!count = 10</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>?</code></td>
+                        <td>Float</td>
+                        <td><code>?pi = 3.14</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>@</code></td>
+                        <td>String</td>
+                        <td><code>@msg = "Hello"</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>&</code></td>
+                        <td>Boolean</td>
+                        <td><code>&0</code> (false), <code>&1</code> (true)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>Control Flow</h2>
+            <p>Logic and loops start with the <code>#</code> character.</p>
+            <table class="command-table">
+                <thead>
+                    <tr>
+                        <th>Keyword</th>
+                        <th>Description</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>#if</code></td>
+                        <td>Conditional logic</td>
+                        <td><code>#if (x > y) { ... }</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>#while</code></td>
+                        <td>Conditional loop</td>
+                        <td><code>#while (x < 10) { ... }</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>#turn</code></td>
+                        <td>Repeat N times</td>
+                        <td><code>#turn (5) { ... }</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>#loop</code></td>
+                        <td>Infinite loop</td>
+                        <td><code>#loop { ... }</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>Functions</h2>
+            <p>Functions are declared with the <code>function</code> keyword and called with <code>get</code>.</p>
+            <pre><code>function greet(name; msg) {
+    write(msg + " " + name)
+}
+
+get greet("Explorer"; "Welcome")</code></pre>
+        </section>
+
+        <section>
+            <h2>File Operations</h2>
+            <p>The <code>file</code> object provides several useful methods for file system interaction.</p>
+            <ul>
+                <li><code>file.create(filename)</code>: Create a new file.</li>
+                <li><code>file.edit(filename, content)</code>: Write content to a file.</li>
+                <li><code>file.read(filename)</code>: Read content from a file.</li>
+                <li><code>file.delete(filename)</code>: Deletes a file.</li>
+                <li><code>file.run(filename)</code>: Executes a file's content as Cave script.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <a href="index.html">About</a>
+            <a href="commands.html">Documentation</a>
+            <a href="dev.html">Developer Hub</a>
+            <a href="download.html">Download</a>
+        </div>
+        <p>&copy; 2026 Fruzio. All rights reserved.</p>
+    </footer>
+</body>
+
+</html>
