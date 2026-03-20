@@ -234,3 +234,61 @@ footer {
     color: var(--header-bg);
     text-decoration: none;
 }
+
+/* TUTORIAL STEPS */
+.step-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    margin-top: 2rem;
+}
+
+.step {
+    background: white;
+    border: 1px solid var(--border-color);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.step h3 {
+    margin-bottom: 1.2rem;
+    color: var(--header-bg);
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.step h3::before {
+    content: counter(step-counter);
+    counter-increment: step-counter;
+    background: var(--header-bg);
+    color: white;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 1rem;
+}
+
+.step-container {
+    counter-reset: step-counter;
+}
+
+.step img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 1.5rem;
+    display: block;
+}
+
+.step p {
+    font-size: 1.05rem;
+    color: var(--text-color);
+    line-height: 1.7;
+}
