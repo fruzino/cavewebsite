@@ -15,10 +15,11 @@
         </div>
         <nav>
             <ul>
-                <li><a href="index.html">About</a></li>
+                <li><a href="index.html">Home</a></li>
                 <li><a href="commands.html" class="active">Documentation</a></li>
                 <li><a href="dev.html">Developer</a></li>
                 <li><a href="download.html">Download</a></li>
+                <li><a href="about.html">About</a></li>
             </ul>
         </nav>
     </header>
@@ -123,11 +124,37 @@ get greet("Explorer"; "Welcome")</code></pre>
                 <li><code>file.run(filename)</code>: Executes a file's content as Cave script.</li>
             </ul>
         </section>
+
+        <section>
+            <h2>Comments</h2>
+            <p>Use comments to document your code. Cave supports single-line and multi-line comments.</p>
+            <table class="command-table">
+                <thead>
+                    <tr>
+                        <th>Syntax</th>
+                        <th>Type</th>
+                        <th>Usage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>||</code></td>
+                        <td>Single-line</td>
+                        <td><code>|| This is a comment</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>|\ ... \|</code></td>
+                        <td>Block (Start/End)</td>
+                        <td><code>|\ This is a<br>multi-line comment \|</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
     </main>
 
     <footer>
         <div class="footer-links">
-            <a href="index.html">About</a>
+            <a href="about.html">About</a>
             <a href="commands.html">Documentation</a>
             <a href="dev.html">Developer Hub</a>
             <a href="download.html">Download</a>

@@ -15,10 +15,11 @@
         </div>
         <nav>
             <ul>
-                <li><a href="index.html">About</a></li>
+                <li><a href="index.html">Home</a></li>
                 <li><a href="commands.html">Documentation</a></li>
                 <li><a href="dev.html" class="active">Developer</a></li>
                 <li><a href="download.html">Download</a></li>
+                <li><a href="about.html">About</a></li>
             </ul>
         </nav>
     </header>
@@ -90,11 +91,11 @@
                         <td>Install a plugin from the repository.</td>
                     </tr>
                     <tr>
-                        <td><code>cave cli update</code></td>
-                        <td>Update all installed plugins.</td>
+                        <td><code>cave cli update &lt;name&gt;</code></td>
+                        <td>Update an installed plugin to the latest version.</td>
                     </tr>
                     <tr>
-                        <td><code>cave cli uninstall &lt;name&gt;</code></td>
+                        <td><code>cave cli remove &lt;name&gt;</code></td>
                         <td>Remove a plugin from the system.</td>
                     </tr>
                 </tbody>
@@ -103,17 +104,16 @@
 
         <section>
             <h2>Contributing</h2>
-            <p>Contributions to Cave are welcome. Join the community on GitHub and help us define the future of the
-                language.</p>
-            <pre><code>$ git clone https://github.com/limesuggestbox360/cavelib
-$ cd cavelib
-$ # Build your plugin</code></pre>
+            <p>Cave is driven by the community. To contribute a plugin, add it to the <code>plugins/</code> folder in our repository.</p>
+            <pre><code>$ git clone https://github.com/fruzino/cavelib
+$ cd cavelib/plugins
+$ # Create your plugin folder here</code></pre>
         </section>
     </main>
 
     <footer>
         <div class="footer-links">
-            <a href="index.html">About</a>
+            <a href="about.html">About</a>
             <a href="commands.html">Documentation</a>
             <a href="dev.html">Developer Hub</a>
             <a href="download.html">Download</a>
