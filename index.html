@@ -4,89 +4,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cave Programming Language</title>
+    <title>Cave - Community Forum</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --accent-color: #64748b;
+            --border-color: #e2e8f0;
+            --header-bg: #1e293b;
+        }
+
+        .forum-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .post-form {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        /* Forum Thread Style */
+        .forum-thread {
+            border-top: 2px solid var(--border-color);
+            padding-top: 20px;
+        }
+
+        .post-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 5px;
+        }
+
+        .post-type {
+            background: #e2e8f0;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+
+        .post-body {
+            line-height: 1.6;
+            color: #334155;
+        }
+
+        .btn-submit {
+            background: var(--header-bg);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+    </style>
 </head>
 
 <body>
-    <header>
-        <div class="logo-container">
-            <span class="logo-text">Cave</span>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="index.html" class="active">Home</a></li>
-                <li><a href="commands.html">Documentation</a></li>
-                <li><a href="plugins.html">Plugins</a></li>
-                <li><a href="dev.html">Developer</a></li>
-                <li><a href="download.html">Download</a></li>
-                <li><a href="about.html">About</a></li>
-            </ul>
-        </nav>
-    </header>
+    <div class="forum-container">
+        <h2>Community Feedback & Bugs</h2>
 
-    <div class="hero">
-        <h1>Cave Programming Language</h1>
-        <p>C reborn</p>
-        <div class="cta-container">
-            <a href="commands.html" class="btn btn-primary">Get Started</a>
-            <a href="download.html" class="btn btn-secondary">Download</a>
-        </div>
+        <section class="post-form">
+            <h3>Create New Post</h3>
+            <form id="feedbackForm">
+                <div class="form-group">
+                    <select id="type" class="form-control" required>
+                        <option value="Feedback">💡 General Feedback</option>
+                        <option value="Bug">🐛 Bug Report</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="name" class="form-control" placeholder="User Name (Optional)">
+                </div>
+                <div class="form-group">
+                    <textarea id="description" class="form-control" required
+                        placeholder="What's on your mind?"></textarea>
+                </div>
+                <button type="submit" class="btn-submit" id="submitBtn">Post to Forum</button>
+            </form>
+        </section>
+
+        <section class="forum-thread" id="forumFeed">
+            <h3>Recent Activity</h3>
+            <div id="loading">Loading posts...</div>
+        </section>
     </div>
 
-    <main class="main-content">
-        <section>
-            <h2>About Cave</h2>
-            <div class="feature-grid">
-                <div class="feature-item">
-                    <h3>Why use Cave?</h3>
-                    <p>Built on C, Cave is fast and easy to learn.</p>
-                </div>
-                <div class="feature-item">
-                    <h3>Syntax</h3>
-                    <p>Easy syntax best for all beginners starting out with C or Python.</p>
-                </div>
-            </div>
-        </section>
+    <script>
+        const API_URL = 'http://localhost:3000/api/feedback';
 
-        <section>
-            <h2>Standard Usage</h2>
-            <p>Write clean, expressive code with minimal boilerplate. Here is a sample of Cave in action:</p>
-            <pre><code>// Define variables with type prefixes
-!count = 5
-@name = "Explorer"
+        // Fetch and display posts
+        async function loadPosts() {
+            try {
+                const res = await fetch(API_URL);
+                const posts = await res.json();
+                const feed = document.getElementById('forumFeed');
+                feed.innerHTML = '<h3>Recent Activity</h3>';
 
-// Loop with a clear condition
-#while (count > 0) {
-    write("Hello " + name + "! Counting: " + count)
-    !count = count - 1
-}
+                posts.reverse().forEach(post => {
+                    const postEl = document.createElement('div');
+                    postEl.className = 'post-card';
+                    postEl.innerHTML = `
+                        <div class="post-header">
+                            <span><strong>${post.name || 'Anonymous'}</strong> • ${new Date(post.date).toLocaleDateString()}</span>
+                            <span class="post-type">${post.type}</span>
+                        </div>
+                        <div class="post-body">${post.description}</div>
+                    `;
+                    feed.appendChild(postEl);
+                });
+            } catch (err) {
+                document.getElementById('loading').textContent = "Failed to load posts.";
+            }
+        }
 
-// Logic statements starting with #
-#if (count == 0) {
-    write("Done!")
-}</code></pre>
-        </section>
+        // Submit new post
+        document.getElementById('feedbackForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
 
-        <section>
-            <h2>Community & Development</h2>
-            <p>Cave is an open ecosystem. Install community plugins with ease or build your own to extend the language's
-                power.</p>
-            <pre><code>$ cave cli install my-plugin
-$ cave run script.cv</code></pre>
-        </section>
-    </main>
+            const data = {
+                type: document.getElementById('type').value,
+                name: document.getElementById('name').value,
+                description: document.getElementById('description').value
+            };
 
-    <footer>
-        <div class="footer-links">
-            <a href="about.html">About</a>
-            <a href="commands.html">Documentation</a>
-            <a href="plugins.html">Plugins</a>
-            <a href="dev.html">Developer Hub</a>
-            <a href="download.html">Download</a>
-        </div>
-        <p>&copy; 2026 Fruzio. All rights reserved.</p>
-    </footer>
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                if (res.ok) {
+                    document.getElementById('feedbackForm').reset();
+                    loadPosts(); // Refresh list
+                }
+            } catch (err) {
+                alert("Server connection failed.");
+            } finally {
+                btn.disabled = false;
+            }
+        });
+
+        loadPosts(); // Initial load
+    </script>
 </body>
 
 </html>

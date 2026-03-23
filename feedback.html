@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cave - Community Forum</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Layout */
+        .forum-shell {
+            display: flex;
+            min-height: calc(100vh - 60px);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            gap: 1.5rem;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 220px;
+            flex-shrink: 0;
+        }
+        .sidebar-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        .sidebar-user {
+            text-align: center;
+            padding: 1rem;
+        }
+        .user-avatar {
+            width: 52px; height: 52px;
+            background: var(--header-bg);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+        }
+        .sidebar-username { font-weight: 700; font-size: 0.95rem; }
+        .sidebar-role { font-size: 0.75rem; color: #94a3b8; margin-top: 0.1rem; }
+        .sidebar-role.admin { color: #ef4444; font-weight: 600; }
+        .sidebar-nav { list-style: none; padding: 0; margin: 0; }
+        .sidebar-nav li a, .sidebar-nav li button {
+            display: flex; align-items: center; gap: 0.6rem;
+            width: 100%; background: none; border: none;
+            padding: 0.55rem 0.6rem; border-radius: 5px;
+            font-size: 0.9rem; cursor: pointer; color: var(--text-color);
+            text-decoration: none; font-family: inherit;
+            transition: background 0.15s;
+        }
+        .sidebar-nav li a:hover, .sidebar-nav li button:hover { background: var(--code-bg); }
+        .sidebar-nav li a.active, .sidebar-nav li button.active { background: var(--header-bg); color: white; }
+        .sidebar-nav .nav-icon { font-size: 1rem; width: 1.2rem; text-align: center; }
+        .sidebar-divider { border: none; border-top: 1px solid var(--border-color); margin: 0.6rem 0; }
+
+        /* Category pills in sidebar */
+        .cat-list { list-style: none; padding: 0; margin: 0; }
+        .cat-list li button {
+            display: block; width: 100%; text-align: left;
+            background: none; border: none; padding: 0.4rem 0.6rem;
+            border-radius: 5px; font-size: 0.85rem; cursor: pointer;
+            color: #64748b; font-family: inherit;
+        }
+        .cat-list li button:hover { background: var(--code-bg); color: var(--text-color); }
+        .cat-list li button.active { font-weight: 700; color: var(--header-bg); }
+        .sidebar-section-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: #94a3b8; font-weight: 700; padding: 0 0.6rem; margin-bottom: 0.4rem; }
+
+        /* Main content */
+        .forum-main { flex: 1; min-width: 0; }
+
+        /* Form inputs */
+        .f-input {
+            width: 100%; padding: 0.65rem 0.9rem;
+            border: 1px solid var(--border-color); border-radius: 5px;
+            font-family: inherit; font-size: 0.93rem; margin-bottom: 0.75rem;
+            box-sizing: border-box; background: white;
+        }
+        .f-input:focus { outline: none; border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(100,116,139,0.1); }
+
+        /* Auth card */
+        .auth-card {
+            max-width: 400px; margin: 3rem auto;
+            background: white; border: 1px solid var(--border-color);
+            border-radius: 8px; padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .auth-card h2 { margin-bottom: 0.3rem; }
+        .auth-card p { color: #64748b; font-size: 0.9rem; margin-bottom: 1.5rem; }
+        .auth-link { cursor: pointer; color: var(--accent-color); font-weight: 600; }
+        .btn-full { width: 100%; padding: 0.7rem; border: none; border-radius: 5px; font-size: 0.95rem; font-weight: 600; cursor: pointer; }
+        .btn-dark { background: var(--header-bg); color: white; }
+        .btn-dark:hover { background: #334155; }
+
+        /* Buttons */
+        .btn-sm { padding: 0.4rem 0.85rem; border-radius: 5px; border: none; font-size: 0.83rem; font-weight: 600; cursor: pointer; }
+        .btn-blue { background: var(--header-bg); color: white; }
+        .btn-blue:hover { background: #334155; }
+        .btn-red { background: #ef4444; color: white; }
+        .btn-green { background: #10b981; color: white; }
+        .btn-outline { background: white; border: 1px solid var(--border-color) !important; color: var(--text-color); }
+        .btn-outline:hover { background: var(--code-bg); }
+        .btn-ghost-sm { background: none; border: none; cursor: pointer; font-size: 0.82rem; color: #64748b; padding: 0.3rem 0.5rem; border-radius: 4px; }
+        .btn-ghost-sm:hover { background: var(--code-bg); }
+
+        /* Page header row */
+        .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.2rem; flex-wrap: wrap; gap: 0.8rem; }
+        .page-header h2 { margin: 0; }
+
+        /* Forum table */
+        .forum-table { width: 100%; border-collapse: collapse; background: white; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; }
+        .forum-table th { background: var(--header-bg); color: #cbd5e1; padding: 0.75rem 1rem; text-align: left; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .forum-table td { padding: 0.9rem 1rem; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+        .forum-table tr:last-child td { border-bottom: none; }
+        .forum-table tbody tr:hover td { background: #f8fafc; }
+        .forum-row-title { font-weight: 600; cursor: pointer; color: var(--text-color); font-size: 0.95rem; }
+        .forum-row-title:hover { color: var(--accent-color); }
+        .forum-row-meta { font-size: 0.78rem; color: #94a3b8; margin-top: 0.25rem; }
+
+        /* Tags */
+        .tag { display: inline-block; font-size: 0.7rem; padding: 0.15rem 0.55rem; border-radius: 20px; font-weight: 600; }
+        .t-open     { background: #dcfce7; color: #15803d; }
+        .t-solved   { background: #dbeafe; color: #1d4ed8; }
+        .t-bug      { background: #fee2e2; color: #dc2626; }
+        .t-question { background: #fef9c3; color: #a16207; }
+        .t-feedback { background: #ede9fe; color: #7c3aed; }
+        .t-general  { background: #f1f5f9; color: #475569; }
+
+        /* Thread */
+        .thread-header { margin-bottom: 1.2rem; }
+        .thread-header h2 { margin-bottom: 0.5rem; font-size: 1.4rem; }
+        .thread-meta { display: flex; flex-wrap: wrap; gap: 0.8rem; font-size: 0.83rem; color: #64748b; align-items: center; }
+        .thread-body { background: white; border: 1px solid var(--border-color); border-radius: 8px; padding: 1.4rem; margin: 1rem 0; line-height: 1.75; white-space: pre-wrap; }
+        .thread-acts { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+        .like-btn { background: none; border: 1px solid var(--border-color); border-radius: 5px; padding: 0.35rem 0.8rem; cursor: pointer; font-size: 0.85rem; color: #64748b; }
+        .like-btn:hover { background: #fef2f2; border-color: #fca5a5; color: #ef4444; }
+        .like-btn.liked { background: #fef2f2; border-color: #fca5a5; color: #ef4444; font-weight: 700; }
+
+        /* Replies */
+        .replies-label { font-weight: 700; margin-bottom: 0.8rem; font-size: 1rem; }
+        .reply-card { background: white; border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem 1.2rem; margin-bottom: 0.75rem; }
+        .reply-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; }
+        .reply-author { font-weight: 700; font-size: 0.88rem; }
+        .reply-date { font-size: 0.75rem; color: #94a3b8; margin-left: 0.5rem; font-weight: 400; }
+        .reply-body { line-height: 1.6; font-size: 0.92rem; white-space: pre-wrap; }
+        .reply-acts { display: flex; gap: 0.4rem; margin-top: 0.6rem; }
+        .subreply-card { margin: 0.5rem 0 0 1.5rem; background: var(--code-bg); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.7rem 1rem; font-size: 0.88rem; }
+        .subreply-form { display: none; margin: 0.5rem 0 0 1.5rem; }
+        .reply-composer { background: white; border: 1px solid var(--border-color); border-radius: 8px; padding: 1.2rem; margin-top: 1.2rem; }
+        .reply-composer h4 { margin-bottom: 0.8rem; font-size: 0.95rem; }
+
+        /* Settings */
+        .settings-card { background: white; border: 1px solid var(--border-color); border-radius: 8px; padding: 1.4rem; margin-bottom: 1rem; }
+        .settings-card h3 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.07em; color: #94a3b8; margin-bottom: 1rem; }
+        .settings-card.danger { border-color: #fca5a5; }
+
+        /* Admin */
+        .admin-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+        .admin-table th { background: #f8fafc; padding: 0.6rem 0.9rem; text-align: left; font-weight: 600; font-size: 0.78rem; text-transform: uppercase; border-bottom: 2px solid var(--border-color); }
+        .admin-table td { padding: 0.65rem 0.9rem; border-bottom: 1px solid var(--border-color); }
+
+        /* Modal */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; }
+        .modal-overlay.open { display: flex; }
+        .modal-box { background: white; border-radius: 8px; padding: 1.8rem; width: 95%; max-width: 520px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+        .modal-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.2rem; }
+        .modal-top h3 { margin: 0; }
+        .modal-close { background: none; border: none; font-size: 1.4rem; cursor: pointer; color: #94a3b8; line-height: 1; }
+
+        /* Misc */
+        .hidden { display: none !important; }
+        .err-msg { color: #ef4444; font-size: 0.83rem; margin: 0.3rem 0; }
+        .ok-msg  { color: #10b981; font-size: 0.83rem; margin: 0.3rem 0; }
+        .empty-state { text-align: center; color: #94a3b8; padding: 3rem 1rem; }
+        .loading-state { text-align: center; color: #94a3b8; padding: 2rem; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo-container"><span class="logo-text">Cave</span></div>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="commands.html">Docs</a></li>
+            <li><a href="plugins.html">Plugins</a></li>
+            <li><a href="dev.html">Dev</a></li>
+            <li><a href="download.html">Download</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="feedback.html" class="active">Forum</a></li>
+        </ul>
+    </nav>
+</header>
+
+<!-- Auth screens (no sidebar) -->
+<div id="view-login" class="hidden">
+    <div class="auth-card">
+        <h2>Welcome back</h2>
+        <p>Sign in to join the Cave community.</p>
+        <input id="login-id" class="f-input" placeholder="Username or Email">
+        <input id="login-pw" class="f-input" type="password" placeholder="Password">
+        <div id="login-err" class="err-msg"></div>
+        <button class="btn-full btn-dark" style="margin-top:0.3rem" onclick="doLogin()">Sign In</button>
+        <p style="margin-top:1.2rem; font-size:0.88rem; text-align:center">
+            No account? <span class="auth-link" onclick="showView('signup')">Sign Up</span>
+            &nbsp;·&nbsp; <span class="auth-link" onclick="showView('list')">Browse as Guest</span>
+        </p>
+    </div>
+</div>
+
+<div id="view-signup" class="hidden">
+    <div class="auth-card">
+        <h2>Create account</h2>
+        <p>Join the Cave community to ask questions and share feedback.</p>
+        <input id="su-user" class="f-input" placeholder="Username">
+        <input id="su-email" class="f-input" type="email" placeholder="Email">
+        <input id="su-pw"   class="f-input" type="password" placeholder="Password (min 6 chars)">
+        <input id="su-pw2"  class="f-input" type="password" placeholder="Confirm Password">
+        <div id="signup-err" class="err-msg"></div>
+        <button class="btn-full btn-dark" style="margin-top:0.3rem" onclick="doSignup()">Create Account</button>
+        <p style="margin-top:1.2rem; font-size:0.88rem; text-align:center">
+            Have an account? <span class="auth-link" onclick="showView('login')">Sign In</span>
+        </p>
+    </div>
+</div>
+
+<!-- Sidebar layout (forum, thread, settings, admin) -->
+<div id="app-shell" class="hidden">
+    <div class="forum-shell">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <!-- User card -->
+            <div class="sidebar-card sidebar-user">
+                <div class="user-avatar" id="sb-avatar">?</div>
+                <div class="sidebar-username" id="sb-name">Guest</div>
+                <div class="sidebar-role" id="sb-role">Browsing as guest</div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="sidebar-card" style="padding:0.6rem">
+                <ul class="sidebar-nav">
+                    <li><button id="nav-list"     onclick="showView('list')">     <span class="nav-icon">💬</span> Forum</button></li>
+                    <li><button id="nav-settings" onclick="showView('settings')"> <span class="nav-icon">⚙️</span> Settings</button></li>
+                    <li id="nav-admin-li" class="hidden"><button id="nav-admin" onclick="showView('admin')"><span class="nav-icon">🛡</span> Admin</button></li>
+                    <hr class="sidebar-divider">
+                    <li id="nav-login-li"><button onclick="showView('login')"><span class="nav-icon">→</span> Sign In</button></li>
+                    <li id="nav-logout-li" class="hidden"><button onclick="doLogout()"><span class="nav-icon">←</span> Log Out</button></li>
+                </ul>
+            </div>
+
+            <!-- Categories -->
+            <div class="sidebar-card">
+                <div class="sidebar-section-title">Categories</div>
+                <ul class="cat-list" id="cat-list"></ul>
+            </div>
+        </aside>
+
+        <!-- Main -->
+        <main class="forum-main">
+            <!-- Forum list -->
+            <div id="view-list" class="hidden">
+                <div class="page-header">
+                    <h2 id="list-heading">Forum</h2>
+                    <button class="btn-sm btn-blue" id="btn-new" onclick="openCreate()">+ New Topic</button>
+                </div>
+                <table class="forum-table">
+                    <thead><tr>
+                        <th style="width:56%">Topic</th>
+                        <th>Replies</th>
+                        <th>Views</th>
+                        <th>Status</th>
+                    </tr></thead>
+                    <tbody id="forum-tbody"><tr><td colspan="4" class="loading-state">Loading…</td></tr></tbody>
+                </table>
+            </div>
+
+            <!-- Thread view -->
+            <div id="view-thread" class="hidden">
+                <button class="btn-sm btn-outline" onclick="showView('list')" style="margin-bottom:1.2rem">← Back</button>
+                <div id="thread-body"></div>
+            </div>
+
+            <!-- Settings -->
+            <div id="view-settings" class="hidden">
+                <h2 style="margin-bottom:1.2rem">Account Settings</h2>
+
+                <div class="settings-card">
+                    <h3>Profile</h3>
+                    <label style="font-size:0.88rem; font-weight:600; display:block; margin-bottom:0.3rem">New Username <span style="color:#94a3b8; font-weight:400">(once per week)</span></label>
+                    <input id="s-user" class="f-input" placeholder="Leave blank to keep current">
+                    <label style="font-size:0.88rem; font-weight:600; display:block; margin-bottom:0.3rem">Bio</label>
+                    <textarea id="s-bio" class="f-input" rows="3" placeholder="Tell the community about yourself…"></textarea>
+                    <button class="btn-sm btn-blue" onclick="saveProfile()">Save Changes</button>
+                    <div id="s-profile-msg"></div>
+                </div>
+
+                <div class="settings-card">
+                    <h3>Change Password</h3>
+                    <input id="s-old-pw" class="f-input" type="password" placeholder="Current Password">
+                    <input id="s-new-pw" class="f-input" type="password" placeholder="New Password">
+                    <button class="btn-sm btn-blue" onclick="changePassword()">Update Password</button>
+                    <div id="s-pw-msg"></div>
+                </div>
+
+                <div class="settings-card danger">
+                    <h3 style="color:#ef4444">Danger Zone</h3>
+                    <button class="btn-sm btn-red" onclick="doLogout()">Log Out</button>
+                </div>
+            </div>
+
+            <!-- Admin -->
+            <div id="view-admin" class="hidden">
+                <h2 style="margin-bottom:1.2rem">Admin Panel</h2>
+                <div class="settings-card">
+                    <h3>Reported Posts</h3>
+                    <div id="admin-reports"><p class="loading-state">Loading…</p></div>
+                </div>
+                <div class="settings-card">
+                    <h3>All Users</h3>
+                    <div id="admin-users"><p class="loading-state">Loading…</p></div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- Create / Edit Modal -->
+<div id="modal-create" class="modal-overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal-box">
+        <div class="modal-top">
+            <h3 id="modal-title">New Topic</h3>
+            <button class="modal-close" onclick="closeModal()">×</button>
+        </div>
+        <input  id="m-title"    class="f-input" placeholder="Title">
+        <select id="m-category" class="f-input">
+            <option>General</option>
+            <option>Bug Reports</option>
+            <option>Feature Requests</option>
+            <option>Help &amp; Support</option>
+            <option>Announcements</option>
+        </select>
+        <select id="m-type" class="f-input">
+            <option>Discussion</option>
+            <option>Bug</option>
+            <option>Question</option>
+            <option>Feedback</option>
+        </select>
+        <textarea id="m-body" class="f-input" rows="7" placeholder="Describe your topic in detail…"></textarea>
+        <div id="modal-err" class="err-msg"></div>
+        <button class="btn-sm btn-blue" onclick="submitForum()">Publish</button>
+        <button class="btn-sm btn-outline" onclick="closeModal()" style="margin-left:0.5rem">Cancel</button>
+    </div>
+</div>
+
+<!-- Report Modal -->
+<div id="modal-report" class="modal-overlay" onclick="if(event.target===this)closeReport()">
+    <div class="modal-box">
+        <div class="modal-top">
+            <h3>Report Post</h3>
+            <button class="modal-close" onclick="closeReport()">×</button>
+        </div>
+        <p style="font-size:0.9rem; color:#64748b; margin-bottom:1rem">Please describe why this post violates community guidelines.</p>
+        <textarea id="report-txt" class="f-input" rows="3" placeholder="Reason…"></textarea>
+        <button class="btn-sm btn-red" onclick="submitReport()">Submit Report</button>
+    </div>
+</div>
+
+<footer>
+    <div class="footer-links">
+        <a href="about.html">About</a>
+        <a href="commands.html">Documentation</a>
+        <a href="plugins.html">Plugins</a>
+        <a href="dev.html">Developer Hub</a>
+        <a href="download.html">Download</a>
+    </div>
+    <p>&copy; 2026 Fruzio. All rights reserved.</p>
+</footer>
+
+<script>
+const API = 'https://caveforum.onrender.com/api';
+const CATS = ['All', 'General', 'Bug Reports', 'Feature Requests', 'Help & Support', 'Announcements'];
+
+let token       = localStorage.getItem('cv_token') || null;
+let me          = JSON.parse(localStorage.getItem('cv_user') || 'null');
+let activeCat   = 'All';
+let editPostId  = null;
+let reportPostId = null;
+
+const H = (s) => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+function timeAgo(d) {
+    const s = Math.floor((Date.now() - new Date(d)) / 1000);
+    if (s < 60) return `${s}s ago`;
+    if (s < 3600) return `${Math.floor(s/60)}m ago`;
+    if (s < 86400) return `${Math.floor(s/3600)}h ago`;
+    return `${Math.floor(s/86400)}d ago`;
+}
+
+function tag(val) {
+    const map = { open:'t-open', solved:'t-solved', Bug:'t-bug', Question:'t-question', Feedback:'t-feedback', Discussion:'t-general', General:'t-general' };
+    return `<span class="tag ${map[val]||'t-general'}">${H(val)}</span>`;
+}
+
+const hdrs = () => ({ 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) });
+
+const VIEWS = ['login','signup','list','thread','settings','admin'];
+function showView(v) {
+    document.getElementById('view-login').classList.add('hidden');
+    document.getElementById('view-signup').classList.add('hidden');
+    document.getElementById('app-shell').classList.add('hidden');
+
+    if (v === 'login' || v === 'signup') {
+        document.getElementById(`view-${v}`).classList.remove('hidden');
+    } else {
+        document.getElementById('app-shell').classList.remove('hidden');
+        ['list','thread','settings','admin'].forEach(n => document.getElementById(`view-${n}`).classList.add('hidden'));
+        document.getElementById(`view-${v}`).classList.remove('hidden');
+        ['nav-list','nav-settings','nav-admin'].forEach(id => {
+            const el = document.getElementById(id); if (el) el.classList.remove('active');
+        });
+        const active = document.getElementById(`nav-${v}`);
+        if (active) active.classList.add('active');
+    }
+
+    if (v === 'list')     loadList();
+    if (v === 'settings') initSettings();
+    if (v === 'admin')    loadAdmin();
+}
+
+function initSidebar() {
+    if (me) {
+        document.getElementById('sb-avatar').textContent = me.username[0].toUpperCase();
+        document.getElementById('sb-name').textContent = me.username;
+        const roleEl = document.getElementById('sb-role');
+        roleEl.textContent = me.role === 'admin' ? 'Administrator' : 'Member';
+        if (me.role === 'admin') roleEl.classList.add('admin');
+        document.getElementById('nav-login-li').classList.add('hidden');
+        document.getElementById('nav-logout-li').classList.remove('hidden');
+        if (me.role === 'admin') document.getElementById('nav-admin-li').classList.remove('hidden');
+        document.getElementById('btn-new').classList.remove('hidden');
+    } else {
+        document.getElementById('sb-avatar').textContent = '?';
+        document.getElementById('sb-name').textContent = 'Guest';
+        document.getElementById('sb-role').textContent = 'Browsing as guest';
+        document.getElementById('nav-login-li').classList.remove('hidden');
+        document.getElementById('nav-logout-li').classList.add('hidden');
+        document.getElementById('nav-admin-li').classList.add('hidden');
+        document.getElementById('btn-new').classList.add('hidden');
+    }
+    const catList = document.getElementById('cat-list');
+    catList.innerHTML = CATS.map(c =>
+        `<li><button class="${c===activeCat?'active':''}" onclick="setCat('${c}')">${H(c)}</button></li>`
+    ).join('');
+}
+
+function setCat(c) { activeCat = c; initSidebar(); loadList(); }
+
+async function doLogin() {
+    const login = document.getElementById('login-id').value.trim();
+    const password = document.getElementById('login-pw').value;
+    const errEl = document.getElementById('login-err');
+    errEl.textContent = '';
+    try {
+        const r = await fetch(`${API}/auth/login`, { method:'POST', headers: hdrs(), body: JSON.stringify({ login, password }) });
+        const d = await r.json();
+        if (!r.ok) { errEl.textContent = d.error; return; }
+        token = d.token; me = d.user;
+        localStorage.setItem('cv_token', token);
+        localStorage.setItem('cv_user', JSON.stringify(me));
+        initSidebar(); showView('list');
+    } catch { errEl.textContent = 'Cannot reach server.'; }
+}
+
+async function doSignup() {
+    const username = document.getElementById('su-user').value.trim();
+    const email    = document.getElementById('su-email').value.trim();
+    const password = document.getElementById('su-pw').value;
+    const pw2      = document.getElementById('su-pw2').value;
+    const errEl    = document.getElementById('signup-err');
+    errEl.textContent = '';
+    if (password !== pw2) { errEl.textContent = 'Passwords do not match.'; return; }
+    try {
+        const r = await fetch(`${API}/auth/signup`, { method:'POST', headers: hdrs(), body: JSON.stringify({ username, email, password }) });
+        const d = await r.json();
+        if (!r.ok) { errEl.textContent = d.error; return; }
+        token = d.token; me = d.user;
+        localStorage.setItem('cv_token', token);
+        localStorage.setItem('cv_user', JSON.stringify(me));
+        initSidebar(); showView('list');
+    } catch { errEl.textContent = 'Cannot reach server.'; }
+}
+
+function doLogout() {
+    token = null; me = null;
+    localStorage.removeItem('cv_token');
+    localStorage.removeItem('cv_user');
+    initSidebar(); showView('login');
+}
+
+async function loadList() {
+    const qs = activeCat !== 'All' ? `?category=${encodeURIComponent(activeCat)}` : '';
+    document.getElementById('list-heading').textContent = activeCat === 'All' ? 'All Discussions' : activeCat;
+    const tbody = document.getElementById('forum-tbody');
+    tbody.innerHTML = '<tr><td colspan="4" class="loading-state">Loading…</td></tr>';
+    try {
+        const r = await fetch(`${API}/forum${qs}`);
+        const posts = await r.json();
+        if (!posts.length) { tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No topics here yet.</td></tr>'; return; }
+        tbody.innerHTML = posts.map(p => `
+            <tr>
+                <td>
+                    <div class="forum-row-title" onclick="loadThread('${p._id}')">${H(p.title)}</div>
+                    <div class="forum-row-meta">${tag(p.type)} &nbsp; by <strong>${H(p.authorName)}</strong> · ${timeAgo(p.date)}</div>
+                </td>
+                <td>${p.replies.length}</td>
+                <td>${p.views}</td>
+                <td>${tag(p.status)}</td>
+            </tr>`).join('');
+    } catch { tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Could not reach server.</td></tr>'; }
+}
+
+async function loadThread(id) {
+    showView('thread');
+    const wrap = document.getElementById('thread-body');
+    wrap.innerHTML = '<p class="loading-state">Loading…</p>';
+    try {
+        const r = await fetch(`${API}/forum/${id}`, { headers: hdrs() });
+        const p = await r.json();
+        renderThread(p);
+    } catch { wrap.innerHTML = '<p class="empty-state">Failed to load thread.</p>'; }
+}
+
+function renderThread(p) {
+    const isOwner = me && p.authorId === me.id;
+    const isAdmin = me && me.role === 'admin';
+    const liked   = me && p.likes.includes(me.id);
+    const loggedIn = !!me;
+    wrap = document.getElementById('thread-body');
+
+    const ownerBtns = (isOwner || isAdmin) ? `
+        <button class="btn-sm btn-outline" onclick='openEdit(${JSON.stringify(p)})'>Edit</button>
+        <button class="btn-sm btn-red" onclick="delPost('${p._id}')">Delete</button>
+        ${isOwner && p.status === 'open' ? `<button class="btn-sm btn-green" onclick="solvePost('${p._id}')">Mark Solved</button>` : ''}
+    ` : '';
+    const reportBtn = loggedIn && !isOwner ? `<button class="btn-sm btn-outline" onclick="openReport('${p._id}')">Report</button>` : '';
+
+    const repliesHtml = p.replies.length
+        ? p.replies.map(r => renderReply(r, p._id)).join('')
+        : '<p class="empty-state" style="padding:1.5rem 0">No replies yet. Be the first!</p>';
+
+    wrap.innerHTML = `
+        <div class="thread-header">
+            <h2>${H(p.title)}</h2>
+            <div class="thread-meta">
+                ${tag(p.status)} ${tag(p.type)} ${tag(p.category)}
+                <span>by <strong>${H(p.authorName)}</strong></span>
+                <span>${timeAgo(p.date)}</span>
+                <span>👁 ${p.views}</span>
+            </div>
+        </div>
+        <div class="thread-body">${H(p.body)}</div>
+        <div class="thread-acts">
+            <button class="like-btn${liked?' liked':''}" onclick="likePost('${p._id}')">
+                ${liked?'♥':'♡'} ${p.likes.length} Like${p.likes.length!==1?'s':''}
+            </button>
+            ${ownerBtns}${reportBtn}
+        </div>
+        <div class="replies-label">${p.replies.length} ${p.replies.length===1?'Reply':'Replies'}</div>
+        ${repliesHtml}
+        ${loggedIn ? `
+            <div class="reply-composer">
+                <h4>Add a Reply</h4>
+                <textarea id="new-reply" class="f-input" rows="4" placeholder="Write a helpful reply…"></textarea>
+                <button class="btn-sm btn-blue" onclick="submitReply('${p._id}')">Post Reply</button>
+            </div>
+        ` : `<p style="color:#94a3b8; font-size:0.9rem; margin-top:1rem"><span class="auth-link" onclick="showView('login')">Sign in</span> to reply.</p>`}
+    `;
+    wrap.dataset.pid = p._id;
+}
+
+function renderReply(r, pid) {
+    const liked = me && r.likes.includes(me.id);
+    const subs = (r.replies||[]).map(s => `
+        <div class="subreply-card">
+            <strong>${H(s.authorName)}</strong> <span style="font-size:0.75rem;color:#94a3b8">${timeAgo(s.date)}</span>
+            <div style="margin-top:0.3rem">${H(s.body)}</div>
+        </div>`).join('');
+    return `
+        <div class="reply-card">
+            <div class="reply-top">
+                <div><span class="reply-author">${H(r.authorName||'Anonymous')}</span><span class="reply-date">${timeAgo(r.date)}</span></div>
+            </div>
+            <div class="reply-body">${H(r.body)}</div>
+            <div class="reply-acts">
+                <button class="btn-ghost-sm${liked?' liked':''}" onclick="likeReply('${pid}','${r._id}')">
+                    ${liked?'♥':'♡'} ${r.likes.length}
+                </button>
+                ${me ? `<button class="btn-ghost-sm" onclick="toggleSR('sr-${r._id}')">↩ Reply</button>` : ''}
+            </div>
+            ${subs}
+            <div class="subreply-form" id="sr-${r._id}">
+                <textarea class="f-input" rows="2" placeholder="Reply…" style="margin-top:0.5rem"></textarea>
+                <button class="btn-sm btn-blue" style="font-size:0.8rem" onclick="subReply('${pid}','${r._id}',this)">Send</button>
+            </div>
+        </div>`;
+}
+
+async function likePost(id) {
+    if (!token) { showView('login'); return; }
+    await fetch(`${API}/forum/${id}/like`, { method:'POST', headers: hdrs() });
+    loadThread(id);
+}
+
+async function likeReply(pid, rid) {
+    if (!token) { showView('login'); return; }
+    await fetch(`${API}/forum/${pid}/reply/${rid}/like`, { method:'POST', headers: hdrs() });
+    loadThread(pid);
+}
+
+async function submitReply(pid) {
+    const body = document.getElementById('new-reply').value.trim();
+    if (!body) return;
+    await fetch(`${API}/forum/${pid}/reply`, { method:'POST', headers: hdrs(), body: JSON.stringify({ body }) });
+    loadThread(pid);
+}
+
+function toggleSR(id) { const f = document.getElementById(id); f.style.display = f.style.display==='block'?'none':'block'; }
+
+async function subReply(pid, rid, btn) {
+    const body = btn.previousElementSibling.value.trim();
+    if (!body) return;
+    await fetch(`${API}/forum/${pid}/reply/${rid}/subreply`, { method:'POST', headers: hdrs(), body: JSON.stringify({ body }) });
+    loadThread(pid);
+}
+
+async function delPost(id) {
+    if (!confirm('Delete this post?')) return;
+    await fetch(`${API}/forum/${id}`, { method:'DELETE', headers: hdrs() });
+    showView('list');
+}
+
+async function solvePost(id) {
+    if (!confirm('Mark as solved? Post will be deleted in 3 days.')) return;
+    await fetch(`${API}/forum/${id}/solve`, { method:'PATCH', headers: hdrs() });
+    loadThread(id);
+}
+
+function openCreate() { editPostId = null; document.getElementById('modal-title').textContent='New Topic'; ['m-title','m-body'].forEach(i=>document.getElementById(i).value=''); document.getElementById('modal-err').textContent=''; document.getElementById('modal-create').classList.add('open'); }
+function openEdit(p) { editPostId=p._id; document.getElementById('modal-title').textContent='Edit Topic'; document.getElementById('m-title').value=p.title; document.getElementById('m-body').value=p.body; document.getElementById('m-category').value=p.category; document.getElementById('m-type').value=p.type; document.getElementById('modal-create').classList.add('open'); }
+function closeModal() { document.getElementById('modal-create').classList.remove('open'); }
+
+async function submitForum() {
+    const title=document.getElementById('m-title').value.trim(), body=document.getElementById('m-body').value.trim(), category=document.getElementById('m-category').value, type=document.getElementById('m-type').value, errEl=document.getElementById('modal-err');
+    errEl.textContent='';
+    if (!title||!body) { errEl.textContent='Title and body are required.'; return; }
+    const url = editPostId ? `${API}/forum/${editPostId}` : `${API}/forum`;
+    const method = editPostId ? 'PATCH' : 'POST';
+    const r = await fetch(url, { method, headers: hdrs(), body: JSON.stringify({ title, body, category, type }) });
+    const d = await r.json();
+    if (!r.ok) { errEl.textContent = d.error; return; }
+    closeModal();
+    if (editPostId) loadThread(editPostId); else showView('list');
+}
+
+function openReport(id) { reportPostId=id; document.getElementById('report-txt').value=''; document.getElementById('modal-report').classList.add('open'); }
+function closeReport() { document.getElementById('modal-report').classList.remove('open'); }
+async function submitReport() {
+    const reason=document.getElementById('report-txt').value.trim(); if(!reason) return;
+    await fetch(`${API}/forum/${reportPostId}/report`, { method:'POST', headers: hdrs(), body: JSON.stringify({ reason }) });
+    closeReport(); alert('Report submitted. Thank you!');
+}
+
+function initSettings() {
+    if (!me) { showView('login'); return; }
+    document.getElementById('s-user').value='';
+    document.getElementById('s-bio').value=me.bio||'';
+    document.getElementById('s-profile-msg').textContent='';
+    document.getElementById('s-pw-msg').textContent='';
+}
+
+async function saveProfile() {
+    const username=document.getElementById('s-user').value.trim()||undefined, bio=document.getElementById('s-bio').value, el=document.getElementById('s-profile-msg');
+    el.className=''; el.textContent='';
+    const r=await fetch(`${API}/auth/settings`,{method:'PATCH',headers:hdrs(),body:JSON.stringify({username,bio})});
+    const d=await r.json();
+    if(!r.ok){el.className='err-msg';el.textContent=d.error;return;}
+    me={...me,username:d.username,bio:d.bio}; localStorage.setItem('cv_user',JSON.stringify(me)); initSidebar();
+    el.className='ok-msg'; el.textContent='Profile saved!';
+}
+
+async function changePassword() {
+    const currentPassword=document.getElementById('s-old-pw').value, newPassword=document.getElementById('s-new-pw').value, el=document.getElementById('s-pw-msg');
+    el.className=''; el.textContent='';
+    const r=await fetch(`${API}/auth/settings`,{method:'PATCH',headers:hdrs(),body:JSON.stringify({currentPassword,newPassword})});
+    const d=await r.json();
+    if(!r.ok){el.className='err-msg';el.textContent=d.error;return;}
+    el.className='ok-msg'; el.textContent='Password updated!';
+}
+
+async function loadAdmin() {
+    if (!me||me.role!=='admin') { showView('list'); return; }
+    const rWrap=document.getElementById('admin-reports'), uWrap=document.getElementById('admin-users');
+    rWrap.innerHTML='<p class="loading-state">Loading…</p>';
+    const rRes=await fetch(`${API}/admin/reports`,{headers:hdrs()});
+    const reports=await rRes.json();
+    rWrap.innerHTML = reports.length
+        ? `<table class="admin-table"><tr><th>Post</th><th>Author</th><th>Reports</th><th></th></tr>${reports.map(p=>`<tr><td><span class="auth-link" onclick="loadThread('${p._id}')">${H(p.title)}</span></td><td>${H(p.authorName)}</td><td>${p.reports.length} — <em>${H(p.reports.at(-1).reason)}</em></td><td><button class="btn-sm btn-red" onclick="adminDel('${p._id}')">Delete</button></td></tr>`).join('')}</table>`
+        : '<p style="color:#94a3b8;font-size:0.9rem">No reported posts.</p>';
+    const uRes=await fetch(`${API}/admin/users`,{headers:hdrs()});
+    const users=await uRes.json();
+    uWrap.innerHTML=`<table class="admin-table"><tr><th>Username</th><th>Email</th><th>Role</th><th>Joined</th><th></th></tr>${users.map(u=>`<tr><td>${H(u.username)}${u.isBanned?'<span class="tag t-bug" style="margin-left:0.4rem">Banned</span>':''}</td><td>${H(u.email)}</td><td>${u.role}</td><td>${new Date(u.joinDate).toLocaleDateString()}</td><td>${u.role!=='admin'?`<button class="btn-sm ${u.isBanned?'btn-green':'btn-red'}" onclick="adminBan('${u._id}')">${u.isBanned?'Unban':'Ban'}</button>`:'—'}</td></tr>`).join('')}</table>`;
+}
+
+async function adminDel(id) { if(!confirm('Delete this post?'))return; await fetch(`${API}/admin/forum/${id}`,{method:'DELETE',headers:hdrs()}); loadAdmin(); }
+async function adminBan(id) { const r=await fetch(`${API}/admin/user/${id}/ban`,{method:'PATCH',headers:hdrs()}); const d=await r.json(); alert(d.message); loadAdmin(); }
+
+initSidebar();
+showView(token ? 'list' : 'login');
+</script>
+
+</body>
+</html>
