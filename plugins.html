@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plugins</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <div class="logo-container">
+            <span class="logo-text">Cave</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="commands.html">Documentation</a></li>
+                <li><a href="plugins.html" class="active">Plugins</a></li>
+                <li><a href="dev.html">Developer</a></li>
+                <li><a href="download.html">Download</a></li>
+                <li><a href="about.html">About</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section>
+            <h1>How to Build a Cave Plugin</h1>
+            <p>Plugins are external programs that add new powers to the Cave programming language. Because Cave uses a
+                simple communication protocol, you can write plugins in almost any language, including Python, C++, or
+                even Batch!</p>
+        </section>
+
+        <section>
+            <h2>The Concept</h2>
+            <p>When you use <code>#insert my_plugin</code>, Cave starts your plugin as a background process.
+                When you call a method like <code>my_plugin.do_something(123)</code>, Cave sends a text message to your
+                plugin's "Standard Input" (stdin).
+                Your plugin reads the message, does its work, and can print results back to the screen.</p>
+        </section>
+
+        <section>
+            <h2>Step 1: Create the Folder</h2>
+            <p>All plugins live in the <code>plugins/</code> folder of your Cave installation. Create a new folder there
+                named after your plugin.</p>
+            <pre><code>c:\Cave\plugins\
+└── math_wizard\    <-- Your plugin folder</code></pre>
+        </section>
+
+        <section>
+            <h2>Step 2: The Launcher (run.bat)</h2>
+            <p>Cave needs to know how to start your plugin. You must create a file named <code>run.bat</code> inside
+                your plugin folder. This file tells Cave exactly what command to run.</p>
+            <p><strong>Example run.bat:</strong></p>
+            <pre><code>@echo off
+:: %%~dp0 ensures the script finds main.py in the same folder
+python "%~dp0main.py"</code></pre>
+        </section>
+
+        <section>
+            <h2>Step 3: The Logic (main.py)</h2>
+            <p>This is where the magic happens. While you can write this manually, Cave provides a
+                <code>plugin.py</code> file to make plugins extremely simple.
+            </p>
+
+            <div class="doc-section">
+                <h3>Using the plugin.py</h3>
+                <ol>
+                    <li>Import the helper.</li>
+                    <li>Create a <code>plugin</code> instance.</li>
+                    <li>Use <code>@plugin.method("name")</code> to define what happens when Cave calls a function.</li>
+                </ol>
+            </div>
+
+            <p><strong>Example main.py:</strong></p>
+            <pre><code>import sys
+import os
+
+# Link to the Cave helper
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from plugin import CavePlugin
+
+plugin = CavePlugin()
+
+# Use *args to safely handle inputs from Cave
+@plugin.method("square")
+def calculate_square(*args):
+    if not args:
+        return
+    
+    val = int(args[0])
+    result = val * val
+    print(f"The square of {val} is {result}")
+
+if __name__ == "__main__":
+    plugin.run()</code></pre>
+        </section>
+
+        <section>
+            <h2>Step 4: Testing your Plugin</h2>
+            <p>Now, create a Cave script (<code>test.cv</code>) and try it out!</p>
+            <pre><code>#insert math_wizard
+
+write("Calling math wizard...")
+math_wizard.square(5)
+
+#cancel math_wizard</code></pre>
+            <p>Run it with <code>cave test.cv</code> and you should see: <br>
+                <code>The square of 5 is 25</code>
+            </p>
+            <p>You can also check if a plugin is currently successfully loaded by using <code>#inserted?("plugin_name")</code> which evaluates to 1 or 0.</p>
+        </section>
+
+        <section>
+            <h2>Advanced Header: Multiple Arguments</h2>
+            <p>Cave supports passing multiple arguments to your plugin. For example,
+                <code>my_plugin.rect(10, 20)</code>. Your Python function will receive these as separate items in the
+                args list:
+            </p>
+            <pre><code>@plugin.method("rect")
+def area(*args):
+    if len(args) < 2:
+        return
+        
+    w = int(args[0])
+    h = int(args[1])
+    print(f"Area: {w * h}")</code></pre>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <a href="about.html">About</a>
+            <a href="commands.html">Documentation</a>
+            <a href="plugins.html">Plugins</a>
+            <a href="dev.html">Developer Hub</a>
+            <a href="download.html">Download</a>
+        </div>
+        <p>&copy; 2026 Fruzio. All rights reserved.</p>
+    </footer>
+</body>
+
+</html>

@@ -17,6 +17,7 @@
             <ul>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="commands.html" class="active">Documentation</a></li>
+                <li><a href="plugins.html">Plugins</a></li>
                 <li><a href="dev.html">Developer</a></li>
                 <li><a href="download.html">Download</a></li>
                 <li><a href="about.html">About</a></li>
@@ -99,6 +100,11 @@
                         <td>Infinite loop</td>
                         <td><code>#loop { ... }</code></td>
                     </tr>
+                    <tr>
+                        <td><code>#for</code></td>
+                        <td>Range Loop</td>
+                        <td><code>#for (!i in r(10)) { ... }</code></td>
+                    </tr>
                 </tbody>
             </table>
         </section>
@@ -123,6 +129,47 @@ get greet("Explorer"; "Welcome")</code></pre>
                 <li><code>file.delete(filename)</code>: Deletes a file.</li>
                 <li><code>file.run(filename)</code>: Executes a file's content as Cave script.</li>
             </ul>
+        </section>
+
+        <section>
+            <h2>System & Console</h2>
+            <p>Commands to interact with the environment and output.</p>
+            <table class="command-table">
+                <thead>
+                    <tr>
+                        <th>Command</th>
+                        <th>Action</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>write(_)</code></td>
+                        <td>Clear Terminal</td>
+                        <td><code>write(_)</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>write(&color, text)</code></td>
+                        <td>Print Colored Text</td>
+                        <td><code>write(&red, "Error!")</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>scan(var, text)</code></td>
+                        <td>Prompt User Input</td>
+                        <td><code>scan(!age, "Age: ")</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>pause</code></td>
+                        <td>Wait for Keypress</td>
+                        <td><code>pause</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>os(command)</code></td>
+                        <td>Execute Shell Command</td>
+                        <td><code>os("echo Hi")</code></td>
+                    </tr>
+                </tbody>
+            </table>
         </section>
 
         <section>
@@ -156,6 +203,7 @@ get greet("Explorer"; "Welcome")</code></pre>
         <div class="footer-links">
             <a href="about.html">About</a>
             <a href="commands.html">Documentation</a>
+            <a href="plugins.html">Plugins</a>
             <a href="dev.html">Developer Hub</a>
             <a href="download.html">Download</a>
         </div>
